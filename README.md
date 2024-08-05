@@ -1,0 +1,2 @@
+# scrutimer
+Timer for scrutineering
