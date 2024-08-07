@@ -1,6 +1,7 @@
 # Analog clock based on example: 
 # https://doc.qt.io/qt-6/qtqml-syntax-basics.html
 import sys
+import datetime
 
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
@@ -8,8 +9,10 @@ from PyQt5.QtCore import QTimer, QObject, pyqtSignal
 
 from time import strftime, localtime
 
-FILE_SEPARATOR = ";"
 FILE_NAME = "Scrutimer.tbl"
+FILE_SEPARATOR = ";"
+FILE_DATE_SEPARATOR = "-"
+FILE_TIME_SEPARATOR = ":"
 
 app = QGuiApplication(sys.argv)
 
@@ -57,9 +60,43 @@ class Slot():
                 self.category = "M"
             else:
                 raise NameError(f"Unrecognised category: {splitstr[0]}")
-            self.start = f"{splitstr[1]} {splitstr[2]}"
-            stoptime = splitstr[3].strip("\n")
-            self.stop = f"{splitstr[1]} {stoptime}"
+            splitdate = splitstr[1].split(FILE_DATE_SEPARATOR)
+            if len(splitdate) >= 3:
+                year = int(splitdate[0])
+                if year < 2000:
+                    year += 2000
+                month = int(splitdate[1])
+                day = int(splitdate[2])
+            elif len(splitdate) == 2:
+                year = datetime.datetime.now().year
+                month = int(splitdate[0])
+                day = int(splitdate[1])
+            else:
+                raise NameError(f"Incomplete date format: {splitdate}")
+            starttime = splitstr[2].split(FILE_TIME_SEPARATOR)
+            if len(starttime) == 3:
+                starthour = int(starttime[0])
+                startminute = int(starttime[1])
+                startsecond = int(starttime[2])
+            elif len(starttime) == 2:
+                starthour = int(starttime[0])
+                startminute = int(starttime[1])
+                startsecond = 0
+            else:
+                raise NameError(f"Incomplete time format: {starttime}")
+            stoptime = splitstr[3].split(FILE_TIME_SEPARATOR)
+            if len(stoptime) == 3:
+                stophour = int(stoptime[0])
+                stopminute = int(stoptime[1])
+                stopsecond = int(stoptime[2])
+            elif len(stoptime) == 2:
+                stophour = int(stoptime[0])
+                stopminute = int(stoptime[1])
+                stopsecond = 0
+            else:
+                raise NameError(f"Incomplete time format: {stoptime}")
+            self.start = datetime.datetime(year, month, day, starthour, startminute, startsecond)
+            self.stop = datetime.datetime(year, month, day, stophour, stopminute, stopsecond)
             if len(splitstr) >= 5:
                 self.comment = splitstr[4].strip("\n")
             else:
@@ -68,8 +105,18 @@ class Slot():
         else:
             raise NameError(f"Incomplete line: {splitstr}")
 
-    def str(self):
-        return(f"{self.category} {self.start} {self.stop} {self.comment}")
+    def str(self, oneline = True):
+        if self.category == "A":
+            category_str = f"Accumulator"
+        elif self.category == "E":
+            category_str = f"Electrical "
+        elif self.category == "M":
+            category_str = f"Mechanical "
+        if oneline:
+            separator = " | "
+        else:
+            separator = "\n"
+        return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop} {self.comment}")
 
 class Timetable():
     slot_list = {}
@@ -92,9 +139,9 @@ class Timetable():
         self.slot_list = [self.slot_list, s]
 
 # Define our backend object, which we pass to QML.
-#backend = Backend()
+backend = Backend()
 
-#engine.rootObjects()[0].setProperty('backend', backend)
+engine.rootObjects()[0].setProperty('backend', backend)
 
 # Read scrutineering time table
 file = open(FILE_NAME, "r")
