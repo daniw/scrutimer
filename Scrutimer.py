@@ -97,6 +97,8 @@ class Slot():
                 raise NameError(f"Incomplete time format: {stoptime}")
             self.start = datetime.datetime(year, month, day, starthour, startminute, startsecond)
             self.stop = datetime.datetime(year, month, day, stophour, stopminute, stopsecond)
+            if self.stop <= self.start:
+                raise NameError(f"Stop time earlier than start time: {self.str()}")
             if len(splitstr) >= 5:
                 self.comment = splitstr[4].strip("\n")
             else:
@@ -116,7 +118,7 @@ class Slot():
             separator = " | "
         else:
             separator = "\n"
-        return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop} {self.comment}")
+        return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop}{separator} Duration: {self.stop-self.start}{separator}{self.comment}")
 
 class Timetable():
     def __init__(self):
@@ -126,15 +128,25 @@ class Timetable():
         for s in datastr:
             if s[0] != "#":
                 if len(s.split(FILE_SEPARATOR)) >= 4:
-                    self.add_slot(s)
+                    self.add_slot(slot_str = s, nocheck = True)
                 else:
                     print(f"File: Incomplete line: {s}")
             else:
                 print(f"File: Comment: {s.strip()}")
+        self.check_slots()
 
-    def add_slot(self, datastr):
-        s = Slot(datastr)
+    def add_slot(self, slot_str, nocheck = False):
+        s = Slot(slot_str)
         self.slot_list.append(s)
+        if nocheck == False:
+            self.check_slots()
+
+    def check_slots(self):
+        for s1 in self.slot_list:
+            for s2 in self.slot_list:
+                if (s1 != s2) & (s1.category == s2.category):
+                    if ((s1.start >= s2.start) & (s1.start <= s2.stop)) | ((s1.stop >= s2.start) & (s1.stop <= s2.stop)):
+                        raise NameError(f"Overlapping slots: \n{s1.str(oneline=True)}\n{s2.str(oneline=True)}")
 
 # Define our backend object, which we pass to QML.
 backend = Backend()
