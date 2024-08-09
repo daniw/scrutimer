@@ -24,6 +24,7 @@ ApplicationWindow {
     Rectangle {
         anchors.fill: parent
 
+        // Background
         Image {
             sourceSize.width: parent.width
             sourceSize.height: parent.height
@@ -31,11 +32,13 @@ ApplicationWindow {
             fillMode: Image.PreserveAspectCrop
         }
 
+        // Clock
         Rectangle {
             anchors.fill: parent
             color: "transparent"
 
             Image {
+                // Clock face
                 id: clockface
                 sourceSize.height: parent.height- 2 * clock_border
                 x: clock_border
@@ -43,6 +46,7 @@ ApplicationWindow {
                 fillMode: Image.PreserveAspectFit
                 source: "./images/Scrutimer_clockface.svg"
 
+                // Clock Hours
                 Image {
                     x: clockface.width/2 - width/2
                     y: (clockface.height/2) - height/2
@@ -54,6 +58,7 @@ ApplicationWindow {
                     }
                 }
 
+                // Clock Minutes
                 Image {
                     x: clockface.width/2 - width/2
                     y: clockface.height/2 - height/2
@@ -68,6 +73,7 @@ ApplicationWindow {
                     }
                 }
 
+                // Clock Seconds
                 Image {
                     x: clockface.width/2 - width/2
                     y: clockface.height/2 - height/2
@@ -82,6 +88,7 @@ ApplicationWindow {
                     }
                 }
 
+                // Clock Center Cap
                 Image {
                     x: clockface.width/2 - width/2
                     y: clockface.height/2 - height/2

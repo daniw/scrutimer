@@ -119,10 +119,8 @@ class Slot():
         return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop} {self.comment}")
 
 class Timetable():
-    slot_list = {}
-
     def __init__(self):
-        self.slot_list = {}
+        self.slot_list = []
 
     def add_slots(self, datastr):
         for s in datastr:
@@ -136,7 +134,7 @@ class Timetable():
 
     def add_slot(self, datastr):
         s = Slot(datastr)
-        self.slot_list = [self.slot_list, s]
+        self.slot_list.append(s)
 
 # Define our backend object, which we pass to QML.
 backend = Backend()
