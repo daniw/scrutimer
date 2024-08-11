@@ -193,14 +193,13 @@ class ScrutimerTimetable():
     def UpdateAnnouncement(self):
         announcement_list = []
         for s in self.slot_list:
-            if ((s.announce_5_min == False) and (s.stop-datetime.timedelta(minutes=5, seconds=5) <= datetime.datetime.now()) and (s.stop-datetime.timedelta(minutes=5) >= datetime.datetime.now())):
+            if ((s.announce_5_min == False) and (s.stop-datetime.timedelta(minutes=5, seconds=2) <= datetime.datetime.now()) and (s.stop-datetime.timedelta(minutes=5) >= datetime.datetime.now())):
                 s.announce_5_min = True
                 announcement_list.append([s.category, "5_min"])
                 continue
-            if(s.announce_5_min == True):
-                if ((s.announce_over == False) and (s.stop-datetime.timedelta(seconds=5)<= datetime.datetime.now()) and (s.stop>= datetime.datetime.now())):
-                    s.announce_over = True
-                    announcement_list.append([s.category, "over"])
+            if ((s.announce_over == False) and (s.stop<= datetime.datetime.now()) and (s.stop+datetime.timedelta(seconds=2)>= datetime.datetime.now())):
+                s.announce_over = True
+                announcement_list.append([s.category, "over"])
         return announcement_list
     
 
