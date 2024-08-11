@@ -25,6 +25,9 @@ class Backend(QObject):
 
     updated = pyqtSignal(str, arguments=['time'])
     hms = pyqtSignal(int, int, int, arguments=['hours','minutes','seconds'])
+    accumulator_text = pyqtSignal(str, arguments=['slot_a'])
+    electrical_text = pyqtSignal(str, arguments=['slot_e'])
+    mechanical_text = pyqtSignal(str, arguments=['slot_m'])
 
     def __init__(self):
         super().__init__()
@@ -41,6 +44,9 @@ class Backend(QObject):
         curr_time = strftime("%H:%M:%S", localtime())
         self.updated.emit(curr_time)
         self.hms.emit(local_time.tm_hour, local_time.tm_min, local_time.tm_sec)
+        self.accumulator_text.emit(fsg_timetable.current_slot(category = "A"))
+        self.electrical_text.emit(fsg_timetable.current_slot(category = "E"))
+        self.mechanical_text.emit(fsg_timetable.current_slot(category = "M"))
 
 class Slot():
     category = ""
@@ -116,9 +122,10 @@ class Slot():
             category_str = f"Mechanical "
         if oneline:
             separator = " | "
+            return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop}{separator}Duration: {self.stop-self.start}{separator}{self.comment}")
         else:
             separator = "\n"
-        return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop}{separator} Duration: {self.stop-self.start}{separator}{self.comment}")
+            return(f"Start: {self.start.strftime('%H:%M:%S')}{separator}Stop: {self.stop.strftime('%H:%M:%S')}{separator}Remaining: {str(self.stop-datetime.datetime.now()).split('.')[0]}{separator}{self.comment}")
 
 class Timetable():
     def __init__(self):
@@ -147,6 +154,14 @@ class Timetable():
                 if (s1 != s2) & (s1.category == s2.category):
                     if ((s1.start >= s2.start) & (s1.start <= s2.stop)) | ((s1.stop >= s2.start) & (s1.stop <= s2.stop)):
                         raise NameError(f"Overlapping slots: \n{s1.str(oneline=True)}\n{s2.str(oneline=True)}")
+
+    def current_slot(self, category):
+        slot_str = "Currently no slot"
+        for s in self.slot_list:
+            if s.category == category:
+                if (s.start <= datetime.datetime.now()) and (s.stop >= datetime.datetime.now()):
+                    slot_str = s.str(oneline = False)
+        return slot_str
 
 # Define our backend object, which we pass to QML.
 backend = Backend()

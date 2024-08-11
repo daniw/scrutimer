@@ -15,11 +15,21 @@ ApplicationWindow {
     y: 0
     title: "Scrutimer"
     flags: Qt.FramelessWindowHint | Qt.Window
+
+    // GUI configuration
     property var clock_border: 20
     property var clock_width_px: 1000
-    property string currTime: "00:00:00"
+    property var title_size: 80
+    property var text_size: 48
+    property var text_top_margin: 12
+
+    // Variables for synchronisation with backend
     property QtObject backend
+    property string currTime: "00:00:00"
     property var hms: {'hours': 0, 'minutes': 0, 'seconds': 0 }
+    property string accumulator_text: "A"
+    property string electrical_text:  "E"
+    property string mechanical_text:    "M"
 
     Rectangle {
         anchors.fill: parent
@@ -98,11 +108,87 @@ ApplicationWindow {
 
             }
 
+            // A-Scruti Slot
+            Text {
+                anchors {
+                    top: parent.top
+                    topMargin: text_top_margin
+                    left: parent.left
+                    leftMargin: text_top_margin + clockface.width+ 2*clock_border
+                }
+                text: "Accumulator Inspection"
+                font.pixelSize: title_size
+                color: "black"
+            }
+
+            Text {
+                anchors {
+                    top: parent.top
+                    topMargin: text_top_margin + title_size
+                    left: parent.left
+                    leftMargin: text_top_margin + clockface.width+ 2*clock_border
+                }
+                text: accumulator_text
+                font.pixelSize: text_size
+                color: "black"
+            }
+
+            // E-Scruti Slot
+            Text {
+                anchors {
+                    top: parent.top
+                    topMargin: text_top_margin + screen.desktopAvailableHeight / 3
+                    left: parent.left
+                    leftMargin: text_top_margin + clockface.width+ 2*clock_border
+                }
+                text: "Electrical Inspection"
+                font.pixelSize: title_size
+                color: "black"
+            }
+
+            Text {
+                anchors {
+                    top: parent.top
+                    topMargin: text_top_margin + title_size + screen.desktopAvailableHeight / 3
+                    left: parent.left
+                    leftMargin: text_top_margin + clockface.width+ 2*clock_border
+                }
+                text: electrical_text
+                font.pixelSize: text_size
+                color: "black"
+            }
+
+            // M-Scruti Slot
+            Text {
+                anchors {
+                    top: parent.top
+                    topMargin: text_top_margin + screen.desktopAvailableHeight * 2 / 3
+                    left: parent.left
+                    leftMargin: text_top_margin + clockface.width+ 2*clock_border
+                }
+                text: "Mechanical Inspection"
+                font.pixelSize: title_size
+                color: "black"
+            }
+
+            Text {
+                anchors {
+                    top: parent.top
+                    topMargin: text_top_margin + title_size + screen.desktopAvailableHeight * 2 / 3
+                    left: parent.left
+                    leftMargin: text_top_margin + clockface.width+ 2*clock_border
+                }
+                text: mechanical_text
+                font.pixelSize: text_size
+                color: "black"
+            }
+
+            // Dgital clock
             Text {
                 anchors {
                     bottom: parent.bottom
                     bottomMargin: 12
-                    right: parent.right
+                    left: parent.left
                     leftMargin: 12
                 }
                 text: currTime  // used to be; text: "16:38:33"
@@ -123,6 +209,18 @@ ApplicationWindow {
 
         function onHms(hours, minutes, seconds) {
             hms = {'hours': hours, 'minutes': minutes, 'seconds': seconds }
+        }
+
+        function onAccumulator_text(slot_a) {
+            accumulator_text = slot_a;
+        }
+
+        function onElectrical_text(slot_e) {
+            electrical_text = slot_e;
+        }
+
+        function onMechanical_text(slot_m) {
+            mechanical_text = slot_m;
         }
     }
 
