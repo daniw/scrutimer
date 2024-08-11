@@ -193,7 +193,6 @@ class ScrutimerTimetable():
                 if ((s.announce_over == False) and (s.stop-datetime.timedelta(seconds=5)<= datetime.datetime.now()) and (s.stop>= datetime.datetime.now())):
                     s.announce_over = True
                     announcement_list.append([s.category, "over"])
-        print(announcement_list)
         return announcement_list
     
 
