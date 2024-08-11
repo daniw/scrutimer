@@ -9,6 +9,7 @@ from PyQt5.QtCore import QTimer, QObject, pyqtSignal
 
 from time import strftime, localtime
 
+#FILE_NAME = "Data/FSG_All_Inspection_Time_Slots_short.csv"
 FILE_NAME = "Scrutimer.tbl"
 FILE_SEPARATOR = ";"
 FILE_DATE_SEPARATOR = "-"
