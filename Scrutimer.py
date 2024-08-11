@@ -69,6 +69,10 @@ class Slot():
                 self.category = "E"
             elif splitstr[0][0] in "Mm":
                 self.category = "M"
+            elif splitstr[0][0] in "Ll":
+                self.category = "L"
+            elif splitstr[0][0] in "Dd":
+                self.category = "D"
             else:
                 raise NameError(f"Unrecognised category: {splitstr[0]}")
             splitdate = splitstr[1].split(FILE_DATE_SEPARATOR)
@@ -125,6 +129,10 @@ class Slot():
             category_str = f"Electrical "
         elif self.category == "M":
             category_str = f"Mechanical "
+        elif self.category == "L":
+            category_str = f"Lunch      "
+        elif self.category == "D":
+            category_str = f"Dinner     "
         if oneline:
             separator = " | "
             return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop}{separator}Duration: {self.stop-self.start}{separator}{self.comment}")
@@ -199,7 +207,6 @@ class ScrutimerTimetable():
 
 def AddAnnouncements():
     list = fsg_timetable.UpdateAnnouncement()
-    print(list)
     for s in list:
         announcements.AddAnnouncement(s[0],s[1])
 
@@ -213,7 +220,7 @@ engine.rootObjects()[0].setProperty('backend', backend)
 file = open(FILE_NAME, "r")
 content = file.readlines()
 file.close()
-print(content)
+#print(content)
 fsg_timetable = ScrutimerTimetable()
 fsg_timetable.add_slots(content)
 

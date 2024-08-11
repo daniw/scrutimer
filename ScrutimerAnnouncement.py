@@ -50,6 +50,7 @@ class ScrutimerAnnouncement:
             else:
                 pygame.mixer.music.load(self._announcementQueue.get())
                 pygame.mixer.music.play()
+                print("Play Music!")
                 while pygame.mixer.music.get_busy() == True:
                     continue 
                     
