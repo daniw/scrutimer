@@ -9,8 +9,8 @@ from PyQt5.QtCore import QTimer, QObject, pyqtSignal
 
 from time import strftime, localtime
 
-#FILE_NAME = "Data/FSG_All_Inspection_Time_Slots_short.csv"
-FILE_NAME = "Scrutimer.tbl"
+FILE_NAME = "Data/FSG_All_Inspection_Time_Slots_short.csv"
+#FILE_NAME = "Scrutimer.tbl"
 FILE_SEPARATOR = ";"
 FILE_DATE_SEPARATOR = "-"
 FILE_TIME_SEPARATOR = ":"
@@ -162,6 +162,19 @@ class Timetable():
             if s.category == category:
                 if (s.start <= datetime.datetime.now()) and (s.stop >= datetime.datetime.now()):
                     slot_str = s.str(oneline = False)
+        if "Currently no slot" in slot_str:
+            next_slot_initial = datetime.datetime(2050,12,12,23,59)
+            next_slot_start = next_slot_initial
+            next_slot = self.slot_list[0]
+            for s in self.slot_list:
+                if s.category == category:
+                    if (s.start > datetime.datetime.now()) & (s.start < next_slot_start):
+                        next_slot_start = s.start
+                        next_slot = s
+                        slot_str = s.str(oneline = False)
+            if next_slot_start < next_slot_initial:
+                slot_str = f"Currently no slot\nNext Slot: {next_slot.start}"
+                #slot_str = f"Currently no slot\nNext Slot: {next_slot.start.strftime('%H:%M:%S')}"
         return slot_str
 
 # Define our backend object, which we pass to QML.
