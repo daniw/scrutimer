@@ -5,12 +5,14 @@ import threading
 
 class ScrutimerAnnouncement:
 
-    _announcement_5_min = {"slot_a":"Sounds/5_min_accu.mp3", 
-                           "slot_m":"Sounds/5_min_mech.mp3", 
-                           "slot_e":"Sounds/5_min_elec.mp3"}
-    _announcement_term =  {"slot_a":"Sounds/over_accu.mp3", 
-                           "slot_m":"Sounds/over_mech.mp3", 
-                           "slot_e":"Sounds/over_elec.mp3"}
+    _announcement_5_min = {"A":"Sounds/5_min_accu.mp3", 
+                           "M":"Sounds/5_min_mech.mp3", 
+                           "E":"Sounds/5_min_elec.mp3"}
+    _announcement_term =  {"A":"Sounds/over_accu.mp3", 
+                           "M":"Sounds/over_mech.mp3", 
+                           "E":"Sounds/over_elec.mp3", 
+                           "D":"Sounds/dinner.mp3", 
+                           "L":"Sounds/lunch.mp3"}
     _announcements = {"5_min": _announcement_5_min, "over":_announcement_term}
     _announcementQueue = queue.Queue()
     
