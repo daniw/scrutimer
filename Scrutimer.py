@@ -8,6 +8,7 @@ from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtCore import QTimer, QObject, pyqtSignal
 
 from time import strftime, localtime
+from ScrutimerAnnouncement import ScrutimerAnnouncement
 
 FILE_NAME = "Scrutimer.tbl"
 FILE_SEPARATOR = ";"
@@ -37,6 +38,7 @@ class Backend(QObject):
         self.timer.setInterval(100)  # msecs 100 = 1/10th sec
         self.timer.timeout.connect(self.update_time)
         self.timer.start()
+        
 
     def update_time(self):
         # Pass the current time to QML.
@@ -53,7 +55,9 @@ class Slot():
     start = ""
     stop = ""
     comment = ""
-
+    announce_5_min = False
+    announce_over = False
+    
     def __init__(self, datastr):
         splitstr = str(datastr).split(FILE_SEPARATOR)
         if len(splitstr) >= 3:
@@ -126,8 +130,8 @@ class Slot():
         else:
             separator = "\n"
             return(f"Start: {self.start.strftime('%H:%M:%S')}{separator}Stop: {self.stop.strftime('%H:%M:%S')}{separator}Remaining: {str(self.stop-datetime.datetime.now()).split('.')[0]}{separator}{self.comment}")
-
-class Timetable():
+class ScrutimerTimetable():
+    
     def __init__(self):
         self.slot_list = []
 
@@ -162,10 +166,34 @@ class Timetable():
                 if (s.start <= datetime.datetime.now()) and (s.stop >= datetime.datetime.now()):
                     slot_str = s.str(oneline = False)
         return slot_str
+        
+        
+    def UpdateAnnouncement(self):
+        announcement_list = []
+        for s in self.slot_list:
+            if ((s.announce_5_min == False) and (s.stop-datetime.timedelta(minutes=5, seconds=5) <= datetime.datetime.now()) and (s.stop-datetime.timedelta(minutes=5) >= datetime.datetime.now())):
+                s.announce_5_min = True
+                announcement_list.append([s.category, "5_min"])
+                continue
+            if(s.announce_5_min == True):
+                if ((s.announce_over == False) and (s.stop-datetime.timedelta(seconds=5)<= datetime.datetime.now()) and (s.stop>= datetime.datetime.now())):
+                    s.announce_over = True
+                    announcement_list.append([s.category, "over"])
+        print(announcement_list)
+        return announcement_list
+    
+
+
+def AddAnnouncements():
+    list = fsg_timetable.UpdateAnnouncement()
+    print(list)
+    for s in list:
+        announcements.AddAnnouncement(s[0],s[1])
 
 # Define our backend object, which we pass to QML.
 backend = Backend()
-
+announcements = ScrutimerAnnouncement()
+announcements.Start()
 engine.rootObjects()[0].setProperty('backend', backend)
 
 # Read scrutineering time table
@@ -173,11 +201,18 @@ file = open(FILE_NAME, "r")
 content = file.readlines()
 file.close()
 print(content)
-fsg_timetable = Timetable()
+fsg_timetable = ScrutimerTimetable()
 fsg_timetable.add_slots(content)
 
 # Initial call to trigger first update. Must be after the setProperty to connect signals.
 backend.update_time()
+
+# Define timer.
+UpdateTimer= QTimer()
+UpdateTimer.setInterval(1000)  # msecs 100 = 1/10th sec
+UpdateTimer.timeout.connect(AddAnnouncements)
+UpdateTimer.start()
+        
 
 sys.exit(app.exec())
 
