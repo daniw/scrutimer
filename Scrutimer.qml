@@ -17,11 +17,12 @@ ApplicationWindow {
     flags: Qt.FramelessWindowHint | Qt.Window
 
     // GUI configuration
-    property var clock_border: 20
+    property var clock_border: 50
     property var clock_width_px: 1000
     property var title_size: 80
     property var text_size: 48
     property var text_top_margin: 12
+    property var dig_clock_size: 64
 
     // Variables for synchronisation with backend
     property QtObject backend
@@ -192,7 +193,7 @@ ApplicationWindow {
                     leftMargin: 12
                 }
                 text: currTime  // used to be; text: "16:38:33"
-                font.pixelSize: 48
+                font.pixelSize: dig_clock_size
                 color: "black"
             }
 
