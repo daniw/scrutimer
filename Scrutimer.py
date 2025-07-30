@@ -139,7 +139,7 @@ class Slot():
             return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop}{separator}Duration: {self.stop-self.start}{separator}{self.comment}")
         else:
             separator = "\n"
-            return(f"Start: {self.start.strftime('%H:%M:%S')}{separator}Stop: {self.stop.strftime('%H:%M:%S')}{separator}Remaining: {str(self.stop-datetime.datetime.now()).split('.')[0]}{separator}{self.comment}")
+            return(f"Start: {self.start.strftime('%H:%M:%S')}{separator}Stop: {self.stop.strftime('%H:%M:%S')}{separator}Remaining: {str(self.stop-datetime.datetime.now()+datetime.timedelta(seconds=1)).split('.')[0]}{separator}{self.comment}")
 class ScrutimerTimetable():
     
     def __init__(self):
