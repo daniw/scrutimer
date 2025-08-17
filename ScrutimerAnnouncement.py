@@ -5,6 +5,7 @@ import threading
 
 class ScrutimerAnnouncement:
 
+    '''
     _announcement_5_min = {"A":"Sounds/5_min_accu.mp3", 
                            "M":"Sounds/5_min_mech.mp3", 
                            "E":"Sounds/5_min_elec.mp3"}
@@ -12,7 +13,28 @@ class ScrutimerAnnouncement:
                            "M":"Sounds/over_mech.mp3", 
                            "E":"Sounds/over_elec.mp3", 
                            "D":"Sounds/dinner.mp3", 
-                           "L":"Sounds/lunch.mp3"}
+                           "DA":"Sounds/dinner_accu.mp3", 
+                           "DM":"Sounds/dinner_mech.mp3", 
+                           "DE":"Sounds/dinner_elec.mp3", 
+                           "L":"Sounds/lunch.mp3", 
+                           "LA":"Sounds/lunch_accu.mp3", 
+                           "LM":"Sounds/lunch_mech.mp3", 
+                           "LE":"Sounds/lunch_elec.mp3"}
+    '''
+    _announcement_5_min = {"A":"Sounds/02_Accu 5 Min Warning.flac", 
+                           "M":"Sounds/01_Mech 5 Min Warning.flac", 
+                           "E":"Sounds/03_Electrical 5 Min Warning.flac"}
+    _announcement_term =  {"A":"Sounds/06_Accu Over.flac", 
+                           "M":"Sounds/05_Mech Over.flac", 
+                           "E":"Sounds/04_Electrical Over.flac", 
+                           "D":"Sounds/08_Dinnertime.flac", 
+                           "DA":"Sounds/25_Accu Dinnertime.flac", 
+                           "DM":"Sounds/24_Mechanical Dinnertime.flac", 
+                           "DE":"Sounds/26_Electrical Dinnertime.flac", 
+                           "L":"Sounds/07_Lunchtime.flac", 
+                           "LA":"Sounds/22_Accu Lunchtime.flac", 
+                           "LM":"Sounds/21_Mech Lunchtime.flac", 
+                           "LE":"Sounds/23_Electrical Lunchtime.flac"}
     _announcements = {"5_min": _announcement_5_min, "over":_announcement_term}
     _announcementQueue = queue.Queue()
     

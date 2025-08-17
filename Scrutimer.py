@@ -71,9 +71,23 @@ class Slot():
             elif splitstr[0][0] in "Mm":
                 self.category = "M"
             elif splitstr[0][0] in "Ll":
-                self.category = "L"
+                if splitstr[4][0] in "Aa":
+                    self.category = "LA"
+                elif splitstr[4][0] in "Ee":
+                    self.category = "LE"
+                elif splitstr[4][0] in "Mm":
+                    self.category = "LM"
+                else:
+                    self.category = "L"
             elif splitstr[0][0] in "Dd":
-                self.category = "D"
+                if splitstr[4][0] in "Aa":
+                    self.category = "DA"
+                elif splitstr[4][0] in "Ee":
+                    self.category = "DE"
+                elif splitstr[4][0] in "Mm":
+                    self.category = "DM"
+                else:
+                    self.category = "D"
             else:
                 raise NameError(f"Unrecognised category: {splitstr[0]}")
             splitdate = splitstr[1].split(FILE_DATE_SEPARATOR)
@@ -132,8 +146,20 @@ class Slot():
             category_str = f"Mechanical "
         elif self.category == "L":
             category_str = f"Lunch      "
+        elif self.category == "LA":
+            category_str = f"Lunch Accu "
+        elif self.category == "LE":
+            category_str = f"Lunch Elec "
+        elif self.category == "LM":
+            category_str = f"Lunch Mech "
         elif self.category == "D":
             category_str = f"Dinner     "
+        elif self.category == "DA":
+            category_str = f"Dinner Accu"
+        elif self.category == "DE":
+            category_str = f"Dinner Elec"
+        elif self.category == "DM":
+            category_str = f"Dinner Mech"
         if oneline:
             separator = " | "
             return(f"{category_str}{separator}Start: {self.start}{separator}Stop: {self.stop}{separator}Duration: {self.stop-self.start}{separator}{self.comment}")
