@@ -184,7 +184,7 @@ ApplicationWindow {
                 color: "black"
             }
 
-            // Dgital clock
+            // Digital clock
             Text {
                 anchors {
                     bottom: parent.bottom
@@ -194,6 +194,19 @@ ApplicationWindow {
                 }
                 text: currTime  // used to be; text: "16:38:33"
                 font.pixelSize: dig_clock_size
+                color: "black"
+            }
+
+            // Repository
+            Text {
+                anchors {
+                    bottom: parent.bottom
+                    bottomMargin: 12
+                    right: parent.right
+                    rightMargin: 12
+                }
+                text: "github.com/daniw/scrutimer"  // used to be; text: "16:38:33"
+                font.pixelSize: text_size/4
                 color: "black"
             }
 
